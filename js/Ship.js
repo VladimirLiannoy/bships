@@ -1,9 +1,12 @@
 class Ship {
 
-    constructor(meshElement) {
+    constructor(meshElement, axesHelper) {
         var me = this;
 
         me.meshElement = meshElement;
+        me.axesHelper = axesHelper;
+
+        axesHelper.position.z = 5;
 
         me.curSpeed = 0;
         me.acceleration = 0.001;
@@ -65,7 +68,11 @@ class Ship {
         me.meshElement.position.x = x;
         me.meshElement.position.z = z;
 
-        me.meshElement.rotation.y = me.direction-Math.PI/2;
+        me.axesHelper.position.x = x;
+        me.axesHelper.position.z = z;
+
+        me.meshElement.rotation.y = me.direction+Math.PI;
+        me.axesHelper.rotation.y = me.direction;
     }
 
     getMesh(){

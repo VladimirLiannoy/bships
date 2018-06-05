@@ -3,7 +3,7 @@ var aspect = window.innerWidth / window.innerHeight;
 
 var camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
 
-var renderer = new THREE.WebGLRenderer({ antialias: true });
+var renderer = new THREE.WebGLRenderer({antialias: true});
 
 
 var ambientLight = new THREE.AmbientLight(0xFFFFFF, 1);
@@ -27,26 +27,65 @@ var helper = new THREE.GridHelper(150, 5);
 scene.add(helper);
 scene.add(cube);
 
-var mesh = new THREE.Mesh( helper.geometry, new THREE.MeshNormalMaterial() );
+var mesh = new THREE.Mesh(helper.geometry, new THREE.MeshNormalMaterial());
 mesh.name = "water";
-scene.add( mesh );
+scene.add(mesh);
 
 
 scene.background = new THREE.Color(0xcccccc);
 
 
-var loader = new THREE.GLTFLoader();
+/*var loader = new THREE.GLTFLoader();
 loader.load('obj/bbb/scene.gltf', function (gltf) {
-    scene.add(gltf.scene);
+    //scene.add(gltf.scene);
 
     gltf.scene.scale.set(0.3, 0.3, 0.3);
 
-    ship = new Ship(gltf.scene);
-    cameraController.ship = ship;
+    //ship = new Ship(gltf.scene);
+    //cameraController.ship = ship;
 
     console.log(gltf);
-});
+});*/
 
+var tst, obj;
+
+var MTLLoader = new THREE.MTLLoader();
+MTLLoader.setPath('obj/b1/');
+MTLLoader.load('ship_01.mtl', function (materials) {
+    materials.preload();
+
+    var OBJLoader = new THREE.OBJLoader();
+
+    OBJLoader.setMaterials(materials);
+    OBJLoader.setPath('obj/b1/');
+    OBJLoader.load('ship_01.obj', function (object) {
+        object.scale.set(0.05, 0.05, 0.05);
+        scene.add(object);
+
+        var material = new THREE.MeshNormalMaterial();
+
+        object.traverse(function (child) {
+            if (child instanceof THREE.Mesh) {
+                child.material = material;
+            }
+        });
+
+        console.log(object);
+
+
+
+        var axesHelper = new THREE.AxesHelper( 50 );
+        scene.add(axesHelper);
+
+        tst = object.children[0];
+        obj = object;
+
+        ship = new Ship(object, axesHelper);
+        cameraController.ship = ship;
+    });
+
+
+});
 
 
 var time = 0,
