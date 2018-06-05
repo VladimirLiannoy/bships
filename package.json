@@ -9,6 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "three.js": "^0.77.1"
+    "three": "latest"
   }
 }

@@ -45,7 +45,9 @@ class Ship {
     }
 
     update() {
-        var me = this;
+        var me = this,
+        x = me.meshElement.position.x,
+        z = me.meshElement.position.z;
 
         if (me.isAccelerates) {
             me.curSpeed += me.acceleration;
@@ -57,10 +59,16 @@ class Ship {
             me.direction -= me.directionChangeSpeed;
         }
 
-        me.meshElement.position.x = me.meshElement.position.x + Math.cos(me.direction) * me.curSpeed;
-        me.meshElement.position.y = me.meshElement.position.y + Math.sin(me.direction) * me.curSpeed;
+        x = x + Math.sin(me.direction) * me.curSpeed;
+        z = z + Math.cos(me.direction) * me.curSpeed;
 
+        me.meshElement.position.x = x;
+        me.meshElement.position.z = z;
 
-        me.meshElement.rotation.z = me.direction;
+        me.meshElement.rotation.y = me.direction-Math.PI/2;
+    }
+
+    getMesh(){
+        return this.meshElement;
     }
 }
