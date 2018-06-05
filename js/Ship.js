@@ -8,10 +8,11 @@ class Ship {
 
         axesHelper.position.z = 5;
 
+        me.maxSpeed = 10;
         me.curSpeed = 0;
-        me.acceleration = 0.001;
+        me.acceleration = 0.0005;
         me.direction = 0;
-        me.directionChangeSpeed = 0.01;
+        me.directionChangeSpeed = 0.2;
 
         me.isAccelerates = false;
         me.isDeaccelerates = false;
@@ -30,6 +31,8 @@ class Ship {
             } else if (key === 39) {
                 me.isTrunsRight = true;
             }
+
+            console.error("keydown", key);
         });
 
         window.addEventListener("keyup", function (e) {
@@ -44,22 +47,27 @@ class Ship {
             } else if (key === 39) {
                 me.isTrunsRight = false;
             }
+
+            console.error("keyup", key);
         });
     }
 
     update() {
         var me = this,
-        x = me.meshElement.position.x,
-        z = me.meshElement.position.z;
+            x = me.meshElement.position.x,
+            z = me.meshElement.position.z,
+            speedPercent = me.curSpeed / me.maxSpeed;
 
         if (me.isAccelerates) {
             me.curSpeed += me.acceleration;
         } else if (me.isDeaccelerates) {
             me.curSpeed -= me.acceleration;
-        } else if (me.isTrunsLeft) {
-            me.direction += me.directionChangeSpeed;
+        }
+
+        if (me.isTrunsLeft) {
+            me.direction += me.directionChangeSpeed * speedPercent;
         } else if (me.isTrunsRight) {
-            me.direction -= me.directionChangeSpeed;
+            me.direction -= me.directionChangeSpeed * speedPercent;
         }
 
         x = x + Math.sin(me.direction) * me.curSpeed;
@@ -71,11 +79,11 @@ class Ship {
         me.axesHelper.position.x = x;
         me.axesHelper.position.z = z;
 
-        me.meshElement.rotation.y = me.direction+Math.PI;
+        me.meshElement.rotation.y = me.direction + Math.PI;
         me.axesHelper.rotation.y = me.direction;
     }
 
-    getMesh(){
+    getMesh() {
         return this.meshElement;
     }
 }

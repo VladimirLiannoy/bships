@@ -1,7 +1,7 @@
 var scene = new THREE.Scene();
 var aspect = window.innerWidth / window.innerHeight;
 
-var camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
+var camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 500);
 
 var renderer = new THREE.WebGLRenderer({antialias: true});
 
@@ -23,11 +23,23 @@ var cube = new THREE.Mesh(geometry, material);
 var ship;
 
 
-var helper = new THREE.GridHelper(150, 5);
+var helper = new THREE.GridHelper(500, 500);
 scene.add(helper);
 scene.add(cube);
 
-var mesh = new THREE.Mesh(helper.geometry, new THREE.MeshNormalMaterial());
+
+
+var TextureLoader = new THREE.TextureLoader();
+var imgTxt = TextureLoader.load( "img/sea.jpg" );
+imgTxt.wrapS = THREE.RepeatWrapping;
+imgTxt.wrapT = THREE.RepeatWrapping;
+imgTxt.repeat.set( 30, 30 );
+var mtrl = new THREE.MeshBasicMaterial({ map: imgTxt });
+mtrl.transparent = true;
+mtrl.opacity = 0.8;
+
+var mesh = new THREE.Mesh(new THREE.PlaneGeometry(500, 500), mtrl);
+mesh.rotation.x = Math.PI + Math.PI / 2;
 mesh.name = "water";
 scene.add(mesh);
 
@@ -59,7 +71,7 @@ MTLLoader.load('ship_01.mtl', function (materials) {
     OBJLoader.setMaterials(materials);
     OBJLoader.setPath('obj/b1/');
     OBJLoader.load('ship_01.obj', function (object) {
-        object.scale.set(0.05, 0.05, 0.05);
+        object.scale.set(0.03, 0.03, 0.03);
         scene.add(object);
 
         var material = new THREE.MeshNormalMaterial();
@@ -73,8 +85,7 @@ MTLLoader.load('ship_01.mtl', function (materials) {
         console.log(object);
 
 
-
-        var axesHelper = new THREE.AxesHelper( 50 );
+        var axesHelper = new THREE.AxesHelper(50);
         scene.add(axesHelper);
 
         tst = object.children[0];
