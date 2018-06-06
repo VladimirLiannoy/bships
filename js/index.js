@@ -84,6 +84,13 @@ MTLLoader.load('ship_01.mtl', function (materials) {
 
         console.log(object);
 
+        var geometry2 = new THREE.CubeGeometry(30, 30, 30);
+        var material2 = new THREE.MeshNormalMaterial();
+        var cannon = new THREE.Mesh(geometry2, material2);
+        cannon.position.y = 150;
+
+        object.add(cannon);
+        //scene.add(cube2);
 
         var axesHelper = new THREE.AxesHelper(50);
         scene.add(axesHelper);
@@ -93,6 +100,7 @@ MTLLoader.load('ship_01.mtl', function (materials) {
 
         ship = new Ship(object, axesHelper);
         cameraController.ship = ship;
+        cameraController.cannon = cannon;
     });
 
 

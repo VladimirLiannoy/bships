@@ -31,8 +31,6 @@ class Ship {
             } else if (key === 39) {
                 me.isTrunsRight = true;
             }
-
-            console.error("keydown", key);
         });
 
         window.addEventListener("keyup", function (e) {
@@ -47,8 +45,6 @@ class Ship {
             } else if (key === 39) {
                 me.isTrunsRight = false;
             }
-
-            console.error("keyup", key);
         });
     }
 
@@ -65,9 +61,9 @@ class Ship {
         }
 
         if (me.isTrunsLeft) {
-            me.direction += me.directionChangeSpeed * speedPercent;
+            me.direction += me.directionChangeSpeed;// * speedPercent;
         } else if (me.isTrunsRight) {
-            me.direction -= me.directionChangeSpeed * speedPercent;
+            me.direction -= me.directionChangeSpeed;// * speedPercent;
         }
 
         x = x + Math.sin(me.direction) * me.curSpeed;
@@ -79,7 +75,7 @@ class Ship {
         me.axesHelper.position.x = x;
         me.axesHelper.position.z = z;
 
-        me.meshElement.rotation.y = me.direction + Math.PI;
+        me.meshElement.rotation.y = me.direction;// + Math.PI;
         me.axesHelper.rotation.y = me.direction;
     }
 

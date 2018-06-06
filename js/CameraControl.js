@@ -152,6 +152,8 @@ class CameraControl {
                 me.line.geometry.vertices[1].z = intersects[i].point.z;
 
                 me.line.geometry.verticesNeedUpdate = true;
+
+                me.cannon.rotation.y = Math.atan2(intersects[i].point.x - shipPosition.x, intersects[i].point.z - shipPosition.z);
             }
         }
 
