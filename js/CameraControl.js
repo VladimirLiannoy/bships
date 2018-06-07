@@ -6,7 +6,7 @@ class CameraControl {
 
         this.seeking = false;
         this.seekingPrevX = 0;
-        this.camRot = Math.PI + Math.PI / 2;
+        this.camRot = 0;//Math.PI + Math.PI / 2;
 
         this.cameraHeigth = 30;
 
@@ -126,7 +126,24 @@ class CameraControl {
 
     update(mesh) {
         var me = this,
-            shipPosition = me.ship.getMesh().position;
+            shipPosition = me.ship.getMesh().position,
+            shipScale = me.ship.getMesh().scale,
+            shipRotation = me.ship.getMesh().rotation,
+            cannonPosition = me.cannon.position,
+            cPos = new THREE.Vector3(
+                cannonPosition.x * shipScale.x,
+                cannonPosition.y * shipScale.y,
+                cannonPosition.z * shipScale.z
+            ),
+            iHead = new THREE.Vector2(1, 0),
+            jHead = new THREE.Vector2(0, 1);
+
+        function rotateVectorByAngle(vector, angle) {
+            return new THREE.Vector2(
+                Math.cos(angle) * vector.x - Math.sin(angle) * vector.y,
+                Math.sin(angle) * vector.x + Math.cos(angle) * vector.y
+            );
+        }
 
         me.camera.position.x = shipPosition.x + Math.sin(me.camRot) * me.cameraHeigth;
         me.camera.position.z = shipPosition.z + Math.cos(me.camRot) * me.cameraHeigth;
@@ -145,15 +162,24 @@ class CameraControl {
                 me.pointer.position.x = intersects[i].point.x;
                 me.pointer.position.z = intersects[i].point.z;
 
-                me.line.geometry.vertices[0].x = shipPosition.x;
-                me.line.geometry.vertices[0].z = shipPosition.z;
+                var newRotCPos = rotateVectorByAngle(new THREE.Vector2(cPos.x, cPos.z), Math.PI * 2 - shipRotation.y);
+
+                cPos.x = newRotCPos.x + shipPosition.x;
+                cPos.z = newRotCPos.y + shipPosition.z;
+
+                me.line.geometry.vertices[0].x = cPos.x;
+                me.line.geometry.vertices[0].z = cPos.z;
+                me.line.geometry.vertices[0].y = cPos.y;
 
                 me.line.geometry.vertices[1].x = intersects[i].point.x;
                 me.line.geometry.vertices[1].z = intersects[i].point.z;
 
                 me.line.geometry.verticesNeedUpdate = true;
 
-                me.cannon.rotation.y = Math.atan2(intersects[i].point.x - shipPosition.x, intersects[i].point.z - shipPosition.z);
+                var angl = Math.atan2(intersects[i].point.x - cPos.x, intersects[i].point.z - cPos.z) -
+                    me.ship.getMesh().rotation.y;
+
+                me.cannon.rotation.y = angl;
             }
         }
 

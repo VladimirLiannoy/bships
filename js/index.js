@@ -85,12 +85,24 @@ MTLLoader.load('ship_01.mtl', function (materials) {
         console.log(object);
 
         var geometry2 = new THREE.CubeGeometry(30, 30, 30);
-        var material2 = new THREE.MeshNormalMaterial();
-        var cannon = new THREE.Mesh(geometry2, material2);
-        cannon.position.y = 150;
+        var geometry3 = new THREE.SphereGeometry(15, 32, 32);
 
-        object.add(cannon);
-        //scene.add(cube2);
+        var material2 = new THREE.MeshNormalMaterial();
+        var material3 = new THREE.MeshNormalMaterial();
+
+        var cannon = new THREE.Mesh(geometry2, material2);
+        var cannonDulo = new THREE.Mesh(geometry3, material3);
+
+        cannonDulo.position.z = 20;
+
+        var turelGroup = new THREE.Group();
+        turelGroup.position.y = 150;
+        turelGroup.position.z = 350;
+
+
+        turelGroup.add(cannon);
+        turelGroup.add(cannonDulo);
+        object.add(turelGroup);
 
         var axesHelper = new THREE.AxesHelper(50);
         scene.add(axesHelper);
@@ -99,8 +111,9 @@ MTLLoader.load('ship_01.mtl', function (materials) {
         obj = object;
 
         ship = new Ship(object, axesHelper);
+
         cameraController.ship = ship;
-        cameraController.cannon = cannon;
+        cameraController.cannon = turelGroup;
     });
 
 
