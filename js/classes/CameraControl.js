@@ -17,6 +17,22 @@ class CameraControl {
 
         this.pointer = this.addRedPointer(scene);
         this.line = this.targetLinePointer(scene);
+
+        var TextureLoader = new THREE.TextureLoader();
+        var imgTxt = TextureLoader.load("img/sea.jpg");
+        imgTxt.wrapS = THREE.RepeatWrapping;
+        imgTxt.wrapT = THREE.RepeatWrapping;
+        imgTxt.repeat.set(30, 30);
+        var mtrl = new THREE.MeshBasicMaterial({map: imgTxt});
+        mtrl.transparent = true;
+        mtrl.opacity = 0.8;
+
+        var mesh = new THREE.Mesh(new THREE.PlaneGeometry(500, 500), mtrl);
+        mesh.rotation.x = Math.PI + Math.PI / 2;
+        mesh.name = "water";
+        scene.add(mesh);
+
+        this.mesh = mesh;
     }
 
     addRedPointer(scene) {
@@ -124,8 +140,10 @@ class CameraControl {
         me.cameraHeigth += 1;
     }
 
-    update(mesh) {
+    update() {
         var me = this,
+            shipPosition = me.ship.position;
+            /*mesh = me.mesh,
             shipPosition = me.ship.getMesh().position,
             shipScale = me.ship.getMesh().scale,
             shipRotation = me.ship.getMesh().rotation,
@@ -134,16 +152,14 @@ class CameraControl {
                 cannonPosition.x * shipScale.x,
                 cannonPosition.y * shipScale.y,
                 cannonPosition.z * shipScale.z
-            ),
-            iHead = new THREE.Vector2(1, 0),
-            jHead = new THREE.Vector2(0, 1);
+            );*/
 
-        function rotateVectorByAngle(vector, angle) {
+        /*function rotateVectorByAngle(vector, angle) {
             return new THREE.Vector2(
                 Math.cos(angle) * vector.x - Math.sin(angle) * vector.y,
                 Math.sin(angle) * vector.x + Math.cos(angle) * vector.y
             );
-        }
+        }*/
 
         me.camera.position.x = shipPosition.x + Math.sin(me.camRot) * me.cameraHeigth;
         me.camera.position.z = shipPosition.z + Math.cos(me.camRot) * me.cameraHeigth;
@@ -152,7 +168,7 @@ class CameraControl {
 
         me.camera.lookAt(shipPosition);
 
-        me.raycaster.setFromCamera(me.mouse, me.camera);
+        /*me.raycaster.setFromCamera(me.mouse, me.camera);
 
         var intersects = me.raycaster.intersectObject(mesh);
 
@@ -181,7 +197,7 @@ class CameraControl {
 
                 me.cannon.rotation.y = angl;
             }
-        }
+        }*/
 
         //console.log(intersects);
 

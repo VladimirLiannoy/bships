@@ -1,0 +1,9 @@
+class Projectile {
+    constructor(){
+
+    }
+
+    update(){
+
+    }
+}

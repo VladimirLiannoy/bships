@@ -8,10 +8,6 @@ var renderer = new THREE.WebGLRenderer({antialias: true});
 
 var ambientLight = new THREE.AmbientLight(0xFFFFFF, 1);
 scene.add(ambientLight);
-/*var directionalLight = new THREE.DirectionalLight(0xeeeeee);
-directionalLight.position.set(1, 1, -1);
-directionalLight.position.normalize();
-scene.add(directionalLight);*/
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -28,21 +24,7 @@ scene.add(helper);
 scene.add(cube);
 
 
-
-var TextureLoader = new THREE.TextureLoader();
-var imgTxt = TextureLoader.load( "img/sea.jpg" );
-imgTxt.wrapS = THREE.RepeatWrapping;
-imgTxt.wrapT = THREE.RepeatWrapping;
-imgTxt.repeat.set( 30, 30 );
-var mtrl = new THREE.MeshBasicMaterial({ map: imgTxt });
-mtrl.transparent = true;
-mtrl.opacity = 0.8;
-
-var mesh = new THREE.Mesh(new THREE.PlaneGeometry(500, 500), mtrl);
-mesh.rotation.x = Math.PI + Math.PI / 2;
-mesh.name = "water";
-scene.add(mesh);
-
+/**/
 
 scene.background = new THREE.Color(0xcccccc);
 
@@ -59,85 +41,53 @@ loader.load('obj/bbb/scene.gltf', function (gltf) {
     console.log(gltf);
 });*/
 
-var tst, obj;
-
-var MTLLoader = new THREE.MTLLoader();
-MTLLoader.setPath('obj/b1/');
-MTLLoader.load('ship_01.mtl', function (materials) {
-    materials.preload();
-
-    var OBJLoader = new THREE.OBJLoader();
-
-    OBJLoader.setMaterials(materials);
-    OBJLoader.setPath('obj/b1/');
-    OBJLoader.load('ship_01.obj', function (object) {
-        object.scale.set(0.03, 0.03, 0.03);
-        scene.add(object);
-
-        var material = new THREE.MeshNormalMaterial();
-
-        object.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                child.material = material;
-            }
-        });
-
-        console.log(object);
-
-        var geometry2 = new THREE.CubeGeometry(30, 30, 30);
-        var geometry3 = new THREE.SphereGeometry(15, 32, 32);
-
-        var material2 = new THREE.MeshNormalMaterial();
-        var material3 = new THREE.MeshNormalMaterial();
-
-        var cannon = new THREE.Mesh(geometry2, material2);
-        var cannonDulo = new THREE.Mesh(geometry3, material3);
-
-        cannonDulo.position.z = 20;
-
-        var turelGroup = new THREE.Group();
-        turelGroup.position.y = 150;
-        turelGroup.position.z = 350;
-
-
-        turelGroup.add(cannon);
-        turelGroup.add(cannonDulo);
-        object.add(turelGroup);
-
-        var axesHelper = new THREE.AxesHelper(50);
-        scene.add(axesHelper);
-
-        tst = object.children[0];
-        obj = object;
-
-        ship = new Ship(object, axesHelper);
-
-        cameraController.ship = ship;
-        cameraController.cannon = turelGroup;
-    });
-
-
-});
-
 
 var time = 0,
     cameraController = new CameraControl(camera, renderer.domElement, scene);
+
+var shipManager = new ShipManager(scene, cameraController);
+
+shipManager.createShip({
+    model: {
+        url: "obj/b1/ship_01.obj",
+        scale: 0.03
+    },
+    position: {
+        x: 0,
+        y: 0,
+        z: 0
+    },
+    cannons: [
+        {
+            position: {
+                x: 0,
+                y: 150,
+                z: 350
+            }
+        },
+        {
+            position: {
+                x: 0,
+                y: 150,
+                z: -100
+            }
+        }
+    ]
+});
 
 
 var render = function () {
     time += 0.01;
 
-    requestAnimationFrame(render);
-
     cube.position.x = Math.cos(time) * 4;
     cube.position.z = Math.sin(time) * 4;
 
-    if (ship) {
-        ship.update();
-        cameraController.update(mesh);
-    }
+    shipManager.update();
+    cameraController.update();
 
     renderer.render(scene, cameraController.camera);
+
+    requestAnimationFrame(render);
 };
 
 render();
